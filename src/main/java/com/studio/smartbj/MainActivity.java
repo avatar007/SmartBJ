@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TextView tv = new TextView(this);
-        tv.setText("窗前明月光,疑似地上霜");
+        tv.setText("我是智慧北京的第一个修改后的页面");
         tv.setTextColor(Color.RED);
         tv.setTextSize(40);
         setContentView(tv);
