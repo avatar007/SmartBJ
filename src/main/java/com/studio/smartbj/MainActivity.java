@@ -1,16 +1,23 @@
 package com.studio.smartbj;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
+import android.view.Window;
 
-public class MainActivity extends AppCompatActivity {
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
+/**
+ * Created by Administrator on 2017/3/14.
+ */
+public class MainActivity extends SlidingFragmentActivity {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView tv = new TextView(this);
-        tv.setText("我是智慧北京的第一个修改后的页面");
-        setContentView(tv);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_main);
+        setBehindContentView(R.layout.left_menu);
+        SlidingMenu slidingMenu = getSlidingMenu();
+        slidingMenu.setBehindOffset(200);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
     }
 }
