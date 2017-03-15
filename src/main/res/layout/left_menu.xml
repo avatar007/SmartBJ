@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:background="#f00"
-              android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/fl_left_menu"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="#000">
+    <TextView
+        android:text="是打发斯蒂芬"
+        android:textColor="#00f"
+        android:textSize="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+</FrameLayout>
