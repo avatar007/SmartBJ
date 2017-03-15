@@ -3,12 +3,5 @@
              android:id="@+id/fl_left_menu"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="#000">
-    <TextView
-        android:text="是打发斯蒂芬"
-        android:textColor="#00f"
-        android:textSize="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+             android:orientation="vertical">
 </FrameLayout>
