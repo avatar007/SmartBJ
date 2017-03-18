@@ -37,4 +37,16 @@ public class MainActivity extends SlidingFragmentActivity {
         transaction.replace(R.id.fl_left_menu, new LeftMenuFragment(), "TAG_LEFT_MENU");
         transaction.commit();
     }
+
+    public LeftMenuFragment getLeftMenuFragment(){
+        FragmentManager fm = getFragmentManager();
+        LeftMenuFragment fragment = (LeftMenuFragment) fm.findFragmentByTag("TAG_LEFT_MENU");
+        return fragment;
+    }
+
+    public ContentFragment getContentFragment(){
+        FragmentManager fm = getFragmentManager();
+        ContentFragment fragment = (ContentFragment) fm.findFragmentByTag("TAG_CONTENT");
+        return fragment;
+    }
 }
