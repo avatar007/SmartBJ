@@ -1,6 +1,7 @@
 package com.studio.smartbj.base.imp;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,7 +38,7 @@ public class NewsCenterPager extends BasePager {
     @Override
     public void initData() {
         String json = CacheUtils.getCache(mActivity, ConstantValue.CATEGORY_URL);
-        if (json != null) {
+        if (!TextUtils.isEmpty(json)) {
             processJson(json);//缓存不为空,获取缓存的json去解析
         }
         //不管有没有缓存,都网络加载下数据,为了让用户在加载时候能看到数据
@@ -56,9 +57,9 @@ public class NewsCenterPager extends BasePager {
                             public void run() {
                                 processJson(json);
                                 //将json作为缓存写入到sp中
+                                CacheUtils.putCache(mActivity, ConstantValue.CATEGORY_URL, json);
                             }
                         });
-                        CacheUtils.putCache(mActivity, ConstantValue.CATEGORY_URL, json);
                     } else {
                         Toast.makeText(mActivity, "网络连接失败", Toast.LENGTH_SHORT);
                     }
