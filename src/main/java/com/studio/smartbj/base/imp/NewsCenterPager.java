@@ -29,7 +29,7 @@ import java.util.List;
 public class NewsCenterPager extends BasePager {
 
     private NewsMenu mNewsMenu;
-    private List<BaseDetailPager> detailPagerList = new ArrayList<>();
+    private List<BaseDetailPager> detailPagerList;
 
     public NewsCenterPager(Activity activity) {
         super(activity);
@@ -78,7 +78,8 @@ public class NewsCenterPager extends BasePager {
         leftMenuFragment.setData(mNewsMenu.data);
 
         //添加四个菜单详情页
-        detailPagerList.add(new NewsMenuDetailPager(mActivity));
+        detailPagerList = new ArrayList<>();
+        detailPagerList.add(new NewsMenuDetailPager(mActivity, mNewsMenu.data.get(0).children));
         detailPagerList.add(new TopicMenuDetailPager(mActivity));
         detailPagerList.add(new PhotoMenuDetailPager(mActivity));
         detailPagerList.add(new InteractMenuDetailPager(mActivity));
@@ -88,12 +89,13 @@ public class NewsCenterPager extends BasePager {
     }
 
     public void setCurDetailPager(int position) {
-        View view = detailPagerList.get(position).mRootView;
+        BaseDetailPager pager = detailPagerList.get(position);
+        View view = pager.mRootView;
         fl_content.removeAllViews();//帧布局添加数据前先移除所有数据,否则会重叠
         fl_content.addView(view);
 
         //初始化数据
-        detailPagerList.get(position).initData();
+        pager.initData();
 
         //更改显示标题(左侧菜单栏的标题)
         tv_title.setText(mNewsMenu.data.get(position).title);

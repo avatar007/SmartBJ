@@ -26,4 +26,6 @@ dependencies {
     compile project(':sliding_menu_library')
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.okhttp:okhttp:2.7.1'
+    compile project(':viewpager_indecator_library')
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

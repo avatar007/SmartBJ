@@ -12,10 +12,10 @@ public class ConstantValue {
     /**
      * URL的前缀
      */
-    public static final String PATH = "http://192.168.0.102:8080/zhbj/";
+    public static final String PATH = "http://192.168.0.102:8080/zhbj";
     /**
      * 首页的url
      */
-    public static final String CATEGORY_URL = PATH + "categories.json";
+    public static final String CATEGORY_URL = PATH + "/categories.json";
 
 }
