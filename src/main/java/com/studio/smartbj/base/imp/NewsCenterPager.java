@@ -1,11 +1,15 @@
 package com.studio.smartbj.base.imp;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.studio.smartbj.Fragment.LeftMenuFragment;
 import com.studio.smartbj.MainActivity;
 import com.studio.smartbj.base.BaseDetailPager;
@@ -17,7 +21,7 @@ import com.studio.smartbj.base.imp.menu.TopicMenuDetailPager;
 import com.studio.smartbj.domian.NewsMenu;
 import com.studio.smartbj.utils.CacheUtils;
 import com.studio.smartbj.utils.ConstantValue;
-import com.studio.smartbj.utils.OKHttpUtils;
+import com.studio.smartbj.utils.OkHttpClientUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +34,7 @@ public class NewsCenterPager extends BasePager {
 
     private NewsMenu mNewsMenu;
     private List<BaseDetailPager> detailPagerList;
+    private Handler mHandler = new Handler();
 
     public NewsCenterPager(Activity activity) {
         super(activity);
@@ -46,28 +51,33 @@ public class NewsCenterPager extends BasePager {
     }
 
     private void getDataFromServer() {
-        new Thread() {
+        OkHttpClientUtils.getDataAsync(mActivity, ConstantValue.CATEGORY_URL, new Callback() {
             @Override
-            public void run() {
-                try {
-                    final String json = OKHttpUtils.loadStringFromUrl(ConstantValue.CATEGORY_URL);
-                    if (json != null) {
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                processJson(json);
-                                //将json作为缓存写入到sp中
-                                CacheUtils.putCache(mActivity, ConstantValue.CATEGORY_URL, json);
-                            }
-                        });
-                    } else {
-                        Toast.makeText(mActivity, "网络连接失败", Toast.LENGTH_SHORT);
+            public void onFailure(Request request, IOException e) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(mActivity, "网络连接失败", Toast.LENGTH_SHORT).show();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                });
+            }
+
+            @Override
+            public void onResponse(final Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    //根据返回的response对象获取responseBody对象,再获取responseBody的String类型json
+                    final String json = response.body().string();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            processJson(json);
+                            //将json作为缓存写入到sp中
+                            CacheUtils.putCache(mActivity, ConstantValue.CATEGORY_URL, json);
+                        }
+                    });
                 }
             }
-        }.start();
+        }, "centerPager");
     }
 
     private void processJson(String json) {
