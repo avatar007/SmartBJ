@@ -18,4 +18,8 @@ public class ConstantValue {
      */
     public static final String CATEGORY_URL = PATH + "/categories.json";
 
+    /**
+     * 条目已读的key
+     */
+    public static final String READ_ID = "read_id";
 }

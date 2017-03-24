@@ -28,4 +28,17 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.7.1'
     compile project(':viewpager_indecator_library')
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile files('libs/MobCommons-2017.0216.1054.jar')
+    compile files('libs/MobTools-2017.0216.1054.jar')
+    compile files('libs/ShareSDK-Alipay-2.8.1.jar')
+    compile files('libs/ShareSDK-Alipay-Core-2.8.1.jar')
+    compile files('libs/ShareSDK-Alipay-Moments-2.8.1.jar')
+    compile files('libs/ShareSDK-Core-2.8.1.jar')
+    compile files('libs/ShareSDK-QQ-2.8.1.jar')
+    compile files('libs/ShareSDK-QZone-2.8.1.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.8.1.jar')
+    compile files('libs/ShareSDK-Wechat-2.8.1.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.8.1.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.8.1.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.8.1.jar')
 }

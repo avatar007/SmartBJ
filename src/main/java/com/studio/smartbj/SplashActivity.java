@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import com.studio.smartbj.utils.ConstantValue;
 import com.studio.smartbj.utils.SpUtils;
 
+import cn.sharesdk.framework.ShareSDK;
+
 public class SplashActivity extends AppCompatActivity {
 
     private RelativeLayout rl_root;
@@ -23,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         rl_root = (RelativeLayout) findViewById(R.id.rl_root);
         initAnimation();
+        ShareSDK.initSDK(this);
     }
 
     private void initAnimation() {

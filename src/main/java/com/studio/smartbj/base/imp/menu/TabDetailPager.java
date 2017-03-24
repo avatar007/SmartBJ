@@ -1,13 +1,16 @@
 package com.studio.smartbj.base.imp.menu;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
+import com.studio.smartbj.NewsDetailActivity;
 import com.studio.smartbj.R;
 import com.studio.smartbj.base.BaseDetailPager;
 import com.studio.smartbj.domian.NewsMenu;
@@ -25,6 +29,7 @@ import com.studio.smartbj.domian.TopNewsBean;
 import com.studio.smartbj.utils.CacheUtils;
 import com.studio.smartbj.utils.ConstantValue;
 import com.studio.smartbj.utils.OkHttpClientUtils;
+import com.studio.smartbj.utils.SpUtils;
 import com.studio.smartbj.view.PullToRefreshListView;
 import com.studio.smartbj.view.TopNewsViewPager;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -35,7 +40,7 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2017/3/19.
  */
-public class TabDetailPager extends BaseDetailPager {
+public class TabDetailPager extends BaseDetailPager implements AdapterView.OnItemClickListener {
     private NewsMenu.TabData mTabData;
     private TopNewsViewPager vp_top_news;
     private String mUrl;
@@ -80,6 +85,8 @@ public class TabDetailPager extends BaseDetailPager {
                 }
             }
         });
+        //listView的点击事件
+        lv_tab_data.setOnItemClickListener(this);
         return view;
     }
 
@@ -174,6 +181,27 @@ public class TabDetailPager extends BaseDetailPager {
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //标记已读未读
+        int headerViewsCount = lv_tab_data.getHeaderViewsCount();//获取头布局个数
+        position = position - headerViewsCount;
+        TopNewsBean.ListViewNews listViewNews = mListNews.get(position);
+        String read_ids = SpUtils.getString(mActivity, ConstantValue.READ_ID, "");
+        if (!read_ids.contains(listViewNews.id + "")) {
+            read_ids = read_ids + listViewNews.id + ",";
+            SpUtils.putString(mActivity, ConstantValue.READ_ID, read_ids);
+        }
+        //点击后修改文字显示颜色,属于局部刷新,全局刷新是用adapter直接刷新
+        TextView tv_title = (TextView) view.findViewById(R.id.tv_title);
+        tv_title.setTextColor(Color.GRAY);
+
+        //点击后跳转到新闻详细页面(webView)
+        Intent intent = new Intent(mActivity, NewsDetailActivity.class);
+        intent.putExtra("url", listViewNews.url);
+        mActivity.startActivity(intent);
+    }
+
     private class TopNewsAdapter extends PagerAdapter {
 
         @Override
@@ -229,6 +257,16 @@ public class TabDetailPager extends BaseDetailPager {
             MyHolder holder = MyHolder.getHolder(convertView);
             holder.tv_title.setText(data.title);
             holder.tv_date.setText(data.pubdate);
+
+            //初始化listView条目时候也要根据sp中存储的已读条目修改显示颜色
+            String read_ids = SpUtils.getString(mActivity, ConstantValue.READ_ID, "");
+            if (read_ids.contains(data.id + "")) {
+                holder.tv_title.setTextColor(Color.GRAY);
+            } else {//listView的重用机制,要把未读的条目也设置颜色
+                holder.tv_title.setTextColor(Color.BLACK);
+            }
+
+            //picasso加载图片
             Picasso.with(mActivity).load(data.listimage)
                     .placeholder(R.mipmap.pic_item_list_default).fit()
                     .config(Bitmap.Config.RGB_565).into(holder.iv_icon);
