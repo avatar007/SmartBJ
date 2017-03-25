@@ -17,7 +17,7 @@ import java.io.IOException;
  * 修改源码OkHttpDownloader类,改为自己的OkHttpDownloader
  * 保证整个应用程序中只有一个okHttp对象,这样picasso在使用okHttp访问网络是使用的是唯一的okHttp对象
  */
-public class MyOkHttpDownloader implements Downloader {
+public class MyOkHttpDownLoader implements Downloader {
     private static OkHttpClient defaultOkHttpClient() {
         OkHttpClient client = OkHttpClientUtils.getOkHttpSingletonInstance();
         return client;
@@ -25,7 +25,7 @@ public class MyOkHttpDownloader implements Downloader {
 
     private final OkHttpClient client;
 
-    public MyOkHttpDownloader(final File cacheDir, final long maxSize) {
+    public MyOkHttpDownLoader(final File cacheDir, final long maxSize) {
         this(defaultOkHttpClient());
         try {
             client.setCache(new com.squareup.okhttp.Cache(cacheDir, maxSize));
@@ -37,7 +37,7 @@ public class MyOkHttpDownloader implements Downloader {
      * Create a new downloader that uses the specified OkHttp instance. A response cache will not be
      * automatically configured.
      */
-    public MyOkHttpDownloader(OkHttpClient client) {
+    public MyOkHttpDownLoader(OkHttpClient client) {
         this.client = client;
     }
 

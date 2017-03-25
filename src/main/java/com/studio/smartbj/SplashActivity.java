@@ -25,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         rl_root = (RelativeLayout) findViewById(R.id.rl_root);
         initAnimation();
+        //初始化shareSDK
         ShareSDK.initSDK(this);
     }
 

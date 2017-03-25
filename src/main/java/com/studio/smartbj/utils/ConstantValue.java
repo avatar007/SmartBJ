@@ -22,4 +22,9 @@ public class ConstantValue {
      * 条目已读的key
      */
     public static final String READ_ID = "read_id";
+
+    /**
+     * 组图的URL
+     */
+    public static final String PHOTOS_URL = PATH + "/photos/photos_1.json";// 组图信息接口
 }

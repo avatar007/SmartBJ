@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,6 +25,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 import com.studio.smartbj.NewsDetailActivity;
 import com.studio.smartbj.R;
+import com.studio.smartbj.application.MyApplication;
 import com.studio.smartbj.base.BaseDetailPager;
 import com.studio.smartbj.domian.NewsMenu;
 import com.studio.smartbj.domian.TopNewsBean;
@@ -51,7 +54,7 @@ public class TabDetailPager extends BaseDetailPager implements AdapterView.OnIte
     private ArrayList<TopNewsBean.ListViewNews> mListNews;
     private String mMoreUrl;
     private ListNewsAdapter mListNewsAdapter;
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
 
     public TabDetailPager(Activity mActivity, NewsMenu.TabData tabData) {
         super(mActivity);
@@ -85,18 +88,52 @@ public class TabDetailPager extends BaseDetailPager implements AdapterView.OnIte
                 }
             }
         });
-        //listView的点击事件
-        lv_tab_data.setOnItemClickListener(this);
         return view;
     }
 
     @Override
     public void initData() {
-        String cacheJson = CacheUtils.getCache(mActivity, mUrl);
+        final String cacheJson = CacheUtils.getCache(mActivity, mUrl);
         if (!TextUtils.isEmpty(cacheJson)) {
             processJson(cacheJson, false);
         }
         loadDataFromServer(mUrl, false);
+        //listView的点击事件
+        lv_tab_data.setOnItemClickListener(this);
+
+        //设置viewPager的自动轮播,这里初始化mHandler,保证自动轮播只执行一遍,上面初始化的话会导致刷新页面后消息重叠
+        if (mHandler == null) {
+            mHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    int currentItem = vp_top_news.getCurrentItem();
+                    currentItem++;
+                    if (currentItem > vp_top_news.getChildCount()) {
+                        currentItem = 0;
+                    }
+                    vp_top_news.setCurrentItem(currentItem, false);
+                    mHandler.sendEmptyMessageDelayed(0, 3000);
+                }
+            };
+            mHandler.sendEmptyMessageDelayed(0, 3000);
+            vp_top_news.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            mHandler.removeCallbacksAndMessages(null);
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            mHandler.sendEmptyMessageDelayed(0, 3000);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            mHandler.sendEmptyMessageDelayed(0, 3000);
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     /**
@@ -120,7 +157,7 @@ public class TabDetailPager extends BaseDetailPager implements AdapterView.OnIte
             public void onResponse(Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String json = response.body().string();
-                    mHandler.post(new Runnable() {
+                    mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             processJson(json, isMore);
@@ -218,9 +255,8 @@ public class TabDetailPager extends BaseDetailPager implements AdapterView.OnIte
         public Object instantiateItem(ViewGroup container, int position) {
             TopNewsBean.ViewPagerNews pagerNews = mTopnews.get(position);
             ImageView iv = new ImageView(mActivity);
-            Picasso.with(mActivity).load(pagerNews.topimage)
-                    .placeholder(R.mipmap.topnews_item_default).fit()
-                    .config(Bitmap.Config.RGB_565).into(iv);
+            MyApplication.getPicasso().with(mActivity).load(pagerNews.topimage)
+                    .placeholder(R.mipmap.topnews_item_default).fit().into(iv);
             container.addView(iv);
             return iv;
         }

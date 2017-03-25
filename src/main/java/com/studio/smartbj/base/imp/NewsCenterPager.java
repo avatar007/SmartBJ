@@ -91,7 +91,7 @@ public class NewsCenterPager extends BasePager {
         detailPagerList = new ArrayList<>();
         detailPagerList.add(new NewsMenuDetailPager(mActivity, mNewsMenu.data.get(0).children));
         detailPagerList.add(new TopicMenuDetailPager(mActivity));
-        detailPagerList.add(new PhotoMenuDetailPager(mActivity));
+        detailPagerList.add(new PhotoMenuDetailPager(mActivity,btn_photo));
         detailPagerList.add(new InteractMenuDetailPager(mActivity));
 
         //默认先加载第一个页面
@@ -109,5 +109,13 @@ public class NewsCenterPager extends BasePager {
 
         //更改显示标题(左侧菜单栏的标题)
         tv_title.setText(mNewsMenu.data.get(position).title);
+
+        // 如果是组图页面, 需要显示切换按钮
+        if (pager instanceof PhotoMenuDetailPager) {
+            btn_photo.setVisibility(View.VISIBLE);
+        } else {
+            // 隐藏切换按钮
+            btn_photo.setVisibility(View.GONE);
+        }
     }
 }

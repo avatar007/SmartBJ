@@ -28,5 +28,6 @@ public class HomePager extends BasePager {
 
         //首页页面不显示左侧菜单栏
         btn_menu.setVisibility(View.GONE);
+        tv_title.setText("首页");
     }
 }
